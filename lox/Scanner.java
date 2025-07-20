@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// TODO: remove this & ref. using `TokenType.` instead
 import static lox.TokenType.*;
 
 class Scanner {
@@ -84,7 +83,14 @@ class Scanner {
 				if (match('/')) {
 					// single-line comment for entire line
 					while (peek() != '\n' && !isAtEnd()) advance();
-				} else {
+				} else if (match('*')) {
+					// multi-line comment
+					while(!isAtEnd()) {
+						if (match('*') && match('/')) break;
+						else advance();
+					}
+				}
+				else {
 					addToken(SLASH);
 				}
 				break;
@@ -186,7 +192,7 @@ class Scanner {
 	private boolean isAtEnd() {
 		return current >= source.length();
 	}
-	
+
 	private char advance() {
 		return source.charAt(current++);
 	}
